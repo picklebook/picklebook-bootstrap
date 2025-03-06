@@ -157,11 +157,13 @@ if [ $operation = "UPGRADE" ]; then
 
     rm -rf picklebook-bootstrap
 
-    git clone https://github.com/picklebook/picklebook-bootstrap.git --depth=1
+    git clone https://github.com/picklebook/picklebook-bootstrap.git --depth=1 -q
 
     hash1=`md5sum picklebook-bootstrap/pbtool.sh | cut -d" " -f1`
     hash2=`md5sum pbtool.sh | cut -d" " -f1`
     
+    cp picklebook-bootstrap/docker-compose-master-* .
+
     if [ $hash1 != $hash2 ]; then
         cp picklebook-bootstrap/pbtool.sh .
         echo "PBTools has been updated, please run again."
