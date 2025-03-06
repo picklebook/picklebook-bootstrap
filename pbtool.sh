@@ -164,6 +164,8 @@ if [ $operation = "UPGRADE" ]; then
     
     cp picklebook-bootstrap/docker-compose-master-* .
     cp picklebook-bootstrap/*.yaml .
+    cp picklebook-bootstrap/*.sh .
+    chmod +x *.sh
 
     if [ $hash1 != $hash2 ]; then
         cp picklebook-bootstrap/pbtool.sh .
