@@ -163,6 +163,7 @@ if [ $operation = "UPGRADE" ]; then
     hash2=`md5sum pbtool.sh | cut -d" " -f1`
     
     cp picklebook-bootstrap/docker-compose-master-* .
+    cp picklebook-bootstrap/*.yaml .
 
     if [ $hash1 != $hash2 ]; then
         cp picklebook-bootstrap/pbtool.sh .
