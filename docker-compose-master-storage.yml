@@ -1,0 +1,95 @@
+name: picklebook-storage
+
+networks:
+  picklebook-network:
+    external: true
+    name: picklebook-network
+
+volumes:
+  picklebook-rabbitmq-data:
+    external: true
+    name: picklebook-rabbitmq-data
+  picklebook-rabbitmq-logs:
+    external: true
+    name: picklebook-rabbitmq-logs
+  picklebook-mysql-data:
+    external: true
+    name: picklebook-mysql-data
+  picklebook-redis-data:
+    external: true
+    name: picklebook-redis-data
+
+services:
+  picklebook-rabbitmq-proxy:
+    image: cloudamqp/amqproxy
+    container_name: picklebook-rabbitmq-proxy
+    command: amqp://picklebook-rabbitmq
+    restart: unless-stopped
+    depends_on:
+      picklebook-rabbitmq:
+        condition: service_healthy
+    networks:
+      - picklebook-network
+
+  picklebook-rabbitmq:
+    image: rabbitmq:3-alpine
+    container_name: picklebook-rabbitmq
+    restart: unless-stopped
+    environment:
+      RABBITMQ_DEFAULT_USER: "${RABBITMQ_USERNAME}"
+      RABBITMQ_DEFAULT_PASS: "${RABBITMQ_PASSWORD}"
+      RABBITMQ_DEFAULT_VHOST: "/"
+    volumes:
+      - picklebook-rabbitmq-data:/var/lib/rabbitmq
+      - picklebook-rabbitmq-logs:/var/log/rabbitmq
+    networks:
+      - picklebook-network
+    healthcheck:
+      test: rabbitmq-diagnostics check_port_connectivity
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  picklebook-database:
+    image: mariadb
+    container_name: picklebook-db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOTPASSWORD}
+    volumes:
+      - picklebook-mysql-data:/var/lib/mysql
+    networks:
+      - picklebook-network
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--su-mysql", "--connect", "--innodb_initialized"]
+      start_period: 10s
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  picklebook-redis:
+    image: redis
+    container_name: picklebook-redis
+    restart: always
+    command: redis-server --save 60 1 --loglevel warning --requirepass ${SESSION_REDISPASSWORD}
+    volumes:
+      - picklebook-redis-data:/data
+    networks:
+      - picklebook-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      start_period: 10s
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    container_name: phpmyadmin
+    restart: unless-stopped
+    environment:
+      PMA_HOST: picklebook-db
+      MYSQL_ROOT_PASSWORD: root
+    networks:
+      - picklebook-network

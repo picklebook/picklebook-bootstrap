@@ -1,0 +1,94 @@
+name: picklebook-metrics
+
+networks:
+  picklebook-network:
+    external: true
+    name: picklebook-network
+
+volumes:
+  picklebook-prometheus-data:
+    external: true
+    name: picklebook-prometheus-data
+  picklebook-grafana-data:
+    external: true
+    name: picklebook-grafana-data
+  picklebook-loki-data:
+    external: true
+    name: picklebook-loki-data
+
+services:
+  grafana:
+    image: grafana/grafana-oss:latest
+    container_name: grafana
+    volumes:
+      - picklebook-grafana-data:/var/lib/grafana
+    restart: unless-stopped
+    networks:
+      - picklebook-network
+    depends_on:
+      - prometheus
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    command: "--config.file=/etc/prometheus/prometheus.yaml"
+    volumes:
+      - ./prometheus.yaml:/etc/prometheus/prometheus.yaml:ro
+      - picklebook-prometheus-data:/prometheus
+    restart: unless-stopped
+    networks:
+      - picklebook-network
+    depends_on:
+      - cadvisor
+
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:latest
+    container_name: cadvisor
+    volumes:
+      - /:/rootfs:ro
+      - /run:/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+      - /dev/disk/:/dev/disk:ro
+    devices:
+      - /dev/kmsg
+    privileged: true
+    restart: unless-stopped
+    networks:
+      - picklebook-network
+
+  fpmexporter:
+    image: hipages/php-fpm_exporter:latest
+    container_name: phpfpm-exporter
+    environment:
+      PHP_FPM_SCRAPE_URI: "tcp://picklebook-web:9000/status"
+      PHP_FPM_LOG_LEVEL: "warn"
+    networks:
+      - picklebook-network
+
+  loki:
+    image: grafana/loki:3.3.2
+    container_name: loki
+    restart: unless-stopped
+    ports:
+      - "3100:3100"
+    command: -config.file=/etc/loki/local-config.yaml
+    networks:
+      - picklebook-network
+    volumes:
+      - picklebook-loki-data:/loki
+
+
+  promtail:
+    image:  grafana/promtail:3.3.2
+    container_name: promtail
+    restart: unless-stopped
+    volumes:
+      - ./promtail.yaml:/etc/promtail/docker-config.yaml:ro
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: -config.file=/etc/promtail/docker-config.yaml
+    depends_on:
+      - loki
+    networks:
+      - picklebook-network

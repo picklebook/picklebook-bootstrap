@@ -1,0 +1,35 @@
+services:
+  ts-picklebook-portainer:
+    image: tailscale/tailscale:latest
+    container_name: picklebook-portainer-ts
+    hostname: picklebook-portainer
+    environment:
+      - TS_AUTHKEY=tskey-auth-kooPecvFtf11CNTRL-39Unw19oGdTmqKRbUzpidTUXFTfWztZq4
+      #- "TS_EXTRA_ARGS=--advertise-tags=tag:container --reset"
+      - TS_SERVE_CONFIG=/config/config.json
+      - TS_STATE_DIR=/var/lib/tailscale
+      - TS_USERSPACE=false
+    volumes:
+      - ${PWD}/config.json:/config/config.json
+      - portainer-ts:/var/lib/tailscale
+      - /dev/net/tun:/dev/net/tun
+    cap_add:
+      - net_admin
+      - sys_module
+    restart: unless-stopped
+
+
+  portainer:
+    image: portainer/portainer-ce:latest
+    container_name: portainer
+    volumes:
+      - portainer-data:/data
+      - /var/run/docker.sock:/var/run/docker.sock
+    network_mode: service:ts-picklebook-portainer
+    restart: unless-stopped
+
+volumes:
+  portainer-data:
+    driver: local
+  portainer-ts:
+    driver: local

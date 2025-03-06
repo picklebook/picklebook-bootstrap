@@ -1,0 +1,29 @@
+name: picklebook-dmz
+
+networks:
+  picklebook-network:
+    external: true
+    name: picklebook-network
+
+volumes:
+  picklebook-user-uploads:
+    external: true
+    name: picklebook-user-uploads
+  picklebook-user-guides:
+    external: true
+    name: picklebook-user-guides
+
+services:
+  picklebook-nginx:
+    container_name: picklebook-nginx
+    image: docker.zwahlen.co.uk/bzwahlen/picklebook-nginx:latest
+    ports:
+      - 443:443
+    restart: unless-stopped
+    labels:
+      - logger=promtail
+    volumes:
+      - picklebook-user-uploads:/var/www/public/user_uploads
+      - picklebook-user-guides:/var/www/public/pb_docs
+    networks:
+      - picklebook-network

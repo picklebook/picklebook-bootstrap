@@ -1,0 +1,53 @@
+name: picklebook-app
+
+networks:
+  picklebook-network:
+    external: true
+    name: picklebook-network
+    
+
+volumes:
+  picklebook-user-uploads:
+    external: true
+    name: picklebook-user-uploads
+  picklebook-user-guides:
+    external: true
+    name: picklebook-user-guides
+
+services:
+  picklebook-web:
+    container_name: picklebook-web
+    image: docker.zwahlen.co.uk/bzwahlen/picklebook-web:latest
+    restart: unless-stopped
+    volumes:
+      - ./.env:/var/www/.env:ro
+      - picklebook-user-uploads:/var/www/public/user_uploads
+      - picklebook-user-guides:/var/www/public/pb_docs
+    environment:
+      upload_max_filesize: 30M
+    networks:
+      - picklebook-network
+
+  postcode-api:
+    container_name: postcode-api
+    image: idealpostcodes/postcodes.io:latest
+    restart: unless-stopped
+    depends_on:
+      - postcode-db
+    environment:
+      - POSTGRES_DATABASE=postcodesiodb
+      - POSTGRES_PASSWORD=${POSTCODE_DB_PASSWORD}
+      - POSTGRES_USER=postcodesio
+      - POSTGRES_HOST=postcode-db
+    networks:
+      - picklebook-network
+  postcode-db:
+    container_name: postcode-db
+    image: idealpostcodes/postcodes.io.db:latest
+    restart: unless-stopped
+    environment:
+      - POSTGRES_DB=postcodesiodb
+      - POSTGRES_PASSWORD=${POSTCODE_DB_PASSWORD}
+      - POSTGRES_USER=postcodesio
+    networks:
+      - picklebook-network

@@ -1,0 +1,48 @@
+name: picklebook-workers
+
+volumes:
+  picklebook-user-uploads:
+    external: true
+    name: picklebook-user-uploads
+
+networks:
+  picklebook-network:
+    external: true
+    name: picklebook-network
+
+
+services:
+  picklebook-worker-email:
+    image: docker.zwahlen.co.uk/bzwahlen/picklebook-worker-email:latest
+    container_name: picklebook-worker-email
+    restart: unless-stopped
+    volumes:
+      - ./.env:/var/www/.env:ro
+      - picklebook-user-uploads:/var/www/public/user_uploads
+    networks:
+      - picklebook-network
+  picklebook-worker-cycles:
+    image: docker.zwahlen.co.uk/bzwahlen/picklebook-worker-cycles:latest
+    container_name: picklebook-worker-cycles
+    restart: unless-stopped
+    volumes:
+      - ./.env:/var/www/.env:ro
+    networks:
+      - picklebook-network
+  picklebook-worker-actions:
+    image: docker.zwahlen.co.uk/bzwahlen/picklebook-worker-actions:latest
+    container_name: picklebook-worker-actions
+    restart: unless-stopped
+    volumes:
+      - ./.env:/var/www/.env:ro
+      - picklebook-user-uploads:/var/www/public/user_uploads
+    networks:
+      - picklebook-network
+  picklebook-worker-audit:
+    image: docker.zwahlen.co.uk/bzwahlen/picklebook-worker-audit:latest
+    container_name: picklebook-worker-audit
+    restart: unless-stopped
+    volumes:
+      - ./.env:/var/www/.env:ro
+    networks:
+      - picklebook-network
