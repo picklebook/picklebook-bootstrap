@@ -78,52 +78,54 @@ if [ $operation = "PRUNE" ]; then
     exit
 fi
 
+if [ "$operation" != "UPGRADE" ]; then
 
-MENU="Which components?"
+    MENU="Which components?"
 
-OPTIONS=(1 "ALL"
-    2 "STORAGE"
-    3 "WORKERS"
-    4 "APP"
-    5 "DMZ"
-    6 "METRICS"
-    7 "MAILPIT"
-    9 "Quit")
+    OPTIONS=(1 "ALL"
+        2 "STORAGE"
+        3 "WORKERS"
+        4 "APP"
+        5 "DMZ"
+        6 "METRICS"
+        7 "MAILPIT"
+        9 "Quit")
 
-CHOICE=$(dialog --clear \
-    --title "$TITLE" \
-    --menu "$MENU" \
-    $HEIGHT $WIDTH $CHOICE_HEIGHT \
-    "${OPTIONS[@]}" \
-    2>&1 >/dev/tty)
+    CHOICE=$(dialog --clear \
+        --title "$TITLE" \
+        --menu "$MENU" \
+        $HEIGHT $WIDTH $CHOICE_HEIGHT \
+        "${OPTIONS[@]}" \
+        2>&1 >/dev/tty)
 
-case $CHOICE in
-1)
-    component="ALL"
-    ;;
-2)
-    component="storage"
-    ;;
-3)
-    component="workers"
-    ;;
-4)
-    component="app"
-    ;;
-5)
-    component="dmz"
-    ;;
-6)
-    component="metrics"
-    ;;
-7)
-    component="mailpit"
-    ;;
-9 | *)
-    clear
-    exit
-    ;;
-esac
+    case $CHOICE in
+    1)
+        component="ALL"
+        ;;
+    2)
+        component="storage"
+        ;;
+    3)
+        component="workers"
+        ;;
+    4)
+        component="app"
+        ;;
+    5)
+        component="dmz"
+        ;;
+    6)
+        component="metrics"
+        ;;
+    7)
+        component="mailpit"
+        ;;
+    9 | *)
+        clear
+        exit
+        ;;
+    esac
+fi
 
 clear
 
@@ -152,26 +154,34 @@ if [ $operation = "STOP" ]; then
 fi
 
 if [ $operation = "UPGRADE" ]; then
-    if [ $component = "ALL" ]; then
 
-        $(docker compose -f docker-compose-master-storage.yml pull)
-        $(docker compose -f docker-compose-master-workers.yml pull)
-        $(docker compose -f docker-compose-master-app.yml pull)
-        $(docker compose -f docker-compose-master-dmz.yml pull)
-        $(docker compose -f docker-compose-master-metrics.yml pull)
-        $(docker compose -f docker-compose-master-mailpit.yml pull)
+    rm -rf picklebook-bootstrap
 
-        $(docker compose -f docker-compose-master-storage.yml up -d --remove-orphans)
-        $(docker compose -f docker-compose-master-workers.yml up -d --remove-orphans)
-        $(docker compose -f docker-compose-master-app.yml up -d --remove-orphans)
-        $(docker compose -f docker-compose-master-dmz.yml up -d --remove-orphans)
-        $(docker compose -f docker-compose-master-metrics.yml up -d --remove-orphans)
-        $(docker compose -f docker-compose-master-mailpit.yml up -d --remove-orphans)
+    git clone https://github.com/picklebook/picklebook-bootstrap.git --depth=1
 
-    else
-        $(docker compose -f docker-compose-master-$component.yml pull)
-        $(docker compose -f docker-compose-master-$component.yml up -d --remove-orphans)
+    hash1=`md5sum picklebook-bootstrap/pbtool.sh | cut -d" " -f1`
+    hash2=`md5sum pbtool.sh | cut -d" " -f1`
+    
+    if [ $hash1 != $hash2 ]; then
+        cp picklebook-bootstrap/pbtool.sh .
+        echo "PBTools has been updated, please run again."
+        exit
     fi
+
+    $(docker compose -f docker-compose-master-storage.yml pull)
+    $(docker compose -f docker-compose-master-workers.yml pull)
+    $(docker compose -f docker-compose-master-app.yml pull)
+    $(docker compose -f docker-compose-master-dmz.yml pull)
+    $(docker compose -f docker-compose-master-metrics.yml pull)
+    $(docker compose -f docker-compose-master-mailpit.yml pull)
+
+    $(docker compose -f docker-compose-master-storage.yml up -d --remove-orphans)
+    $(docker compose -f docker-compose-master-workers.yml up -d --remove-orphans)
+    $(docker compose -f docker-compose-master-app.yml up -d --remove-orphans)
+    $(docker compose -f docker-compose-master-dmz.yml up -d --remove-orphans)
+    $(docker compose -f docker-compose-master-metrics.yml up -d --remove-orphans)
+    $(docker compose -f docker-compose-master-mailpit.yml up -d --remove-orphans)
+
     echo "Pruning unused images..."
     docker image prune -af
     echo "Complete."
