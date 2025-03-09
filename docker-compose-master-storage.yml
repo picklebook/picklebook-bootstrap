@@ -51,13 +51,17 @@ services:
       retries: 5
 
   picklebook-database:
-    image: mariadb
+    image: mariadb:11.7
     container_name: picklebook-db
     restart: unless-stopped
     environment:
-      MYSQL_ROOT_PASSWORD: ${DB_ROOTPASSWORD}
+      MYSQL_ROOT_PASSWORD: "${DB_ROOTPASSWORD}"
+      MARIADB_DATABASE: ${DB_DBNAME}
+      MARIADB_USER: ${DB_USER}
+      MARIADB_PASSWORD: "${DB_PASSWORD}"
     volumes:
       - picklebook-mysql-data:/var/lib/mysql
+      - ./picklebook.sql:/docker-entrypoint-initdb.d/1-init.sql
     networks:
       - picklebook-network
     healthcheck:
@@ -68,7 +72,7 @@ services:
       retries: 5
 
   picklebook-redis:
-    image: redis
+    image: redis:7.4
     container_name: picklebook-redis
     restart: always
     command: redis-server --save 60 1 --loglevel warning --requirepass ${SESSION_REDISPASSWORD}
