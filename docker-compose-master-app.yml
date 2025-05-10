@@ -17,7 +17,7 @@ volumes:
 services:
   picklebook-web:
     container_name: picklebook-web
-    image: docker.zwahlen.co.uk/bzwahlen/picklebook-web:latest
+    image: docker.picklebook.org/bzwahlen/picklebook-web:latest
     restart: unless-stopped
     volumes:
       - ./.env:/var/www/.env:ro
