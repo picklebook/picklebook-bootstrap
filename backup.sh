@@ -24,6 +24,6 @@ tar -czf backup_$SITE_ENV"_"$DATE.tar.gz backup_$SITE_ENV"_"$DATE
 
 rm -rf backup_$SITE_ENV"_"$DATE
 
-curl -T backup_$SITE_ENV"_"$DATE.tar.gz "ftp://ftp.zwahlen.co.uk:2121/$SITE_ENV/" --user "${BACKUP_FTP_USERNAME}:${BACKUP_FTP_PASSWORD}"
+curl -k -T backup_$SITE_ENV"_"$DATE.tar.gz "sftp://ftp.picklebook.org:2022/$SITE_ENV/" --user "${BACKUP_FTP_USERNAME}:${BACKUP_FTP_PASSWORD}"
 
 rm -rf backup_$SITE_ENV"_"$DATE.tar.gz

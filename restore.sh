@@ -16,12 +16,14 @@ tar -xvzf $2.tar.gz
 
 
 docker volume rm picklebook-mysql-data
+docker volume rm picklebook-redis-data
 docker volume rm picklebook-user-uploads
 docker volume rm picklebook-user-guides
 
 docker volume create picklebook-mysql-data
 docker volume create picklebook-user-uploads
 docker volume create picklebook-user-guides
+docker volume create picklebook-redis-data
 
 
 cp $2/db/picklebook.sql .
