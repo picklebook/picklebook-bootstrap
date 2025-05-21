@@ -1,15 +1,17 @@
 #!/bin/bash
 
-if [" docker container inspect picklebook-db > /dev/null 2>&1" ]; then
+docker container inspect --format="{{.State.Running}}" picklebook-db > /dev/null 2>&1
+if [ $? -ne 1 ]; then
     echo "Please stop picklebook-db container first."
     exit 1
 fi
+
 
 set -a
 source .env
 set +a
 
-curl -o $2.tar.gz "ftp://ftp.zwahlen.co.uk:2121/$1/$2.tar.gz" --user "${BACKUP_FTP_USERNAME}:${BACKUP_FTP_PASSWORD}"
+curl -k -o $2.tar.gz "sftp://ftp.picklebook.org:2022/$1/$2.tar.gz" --user "${BACKUP_FTP_USERNAME}:${BACKUP_FTP_PASSWORD}"
 
 tar -xvzf $2.tar.gz
 

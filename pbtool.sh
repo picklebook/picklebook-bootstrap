@@ -70,7 +70,6 @@ case $CHOICE in
     ;;
 esac
 
-
 if [ $operation = "PRUNE" ]; then
     clear
     echo "Pruning unused images..."
