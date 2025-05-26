@@ -42,6 +42,7 @@ OPTIONS=(1 "STOP"
     2 "(RE)START"
     3 "UPGRADE"
     4 "PRUNE (safe)"
+    5 "PURGE CACHE (safe)"
     9 "Quit")
 
 CHOICE=$(dialog --clear \
@@ -64,11 +65,21 @@ case $CHOICE in
 4)
     operation="PRUNE"
     ;;
+5)
+    operation="PURGECACHE"
+    ;;
 9 | *)
     clear
     exit
     ;;
 esac
+
+if [ $operation = "PURGECACHE" ]; then
+    clear
+    echo "Purging cache..."
+    docker exec -it picklebook-worker-cycles bash -c "cd jobs; php purge-cache.php"
+    exit
+fi
 
 if [ $operation = "PRUNE" ]; then
     clear
@@ -186,6 +197,10 @@ if [ $operation = "UPGRADE" ]; then
     $(docker compose -f docker-compose-master-dmz.yml up -d --remove-orphans)
     $(docker compose -f docker-compose-master-metrics.yml up -d --remove-orphans)
     $(docker compose -f docker-compose-master-mailpit.yml up -d --remove-orphans)
+
+    echo "Purging cache..."
+    docker exec -it picklebook-worker-cycles bash -c "cd jobs; php purge-cache.php"
+    echo "Complete."
 
     echo "Pruning unused images..."
     docker image prune -af
