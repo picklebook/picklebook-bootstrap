@@ -19,6 +19,8 @@ cp .env backup_$SITE_ENV"_"$DATE/env
 cp -R /var/lib/docker/volumes/picklebook-user-uploads/_data/* backup_$SITE_ENV"_"$DATE/user-uploads/
 cp -R /var/lib/docker/volumes/picklebook-user-guides/_data/* backup_$SITE_ENV"_"$DATE/user-guides/
 
+rm -rf backup_$SITE_ENV"_"$DATE/user-uploads/profilepic/orig/*
+
 tar -czf backup_$SITE_ENV"_"$DATE.tar.gz backup_$SITE_ENV"_"$DATE
 
 
