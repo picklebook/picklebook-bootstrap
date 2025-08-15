@@ -104,7 +104,7 @@ services:
     container_name: kbdb
     environment:
       POSTGRES_DB: wiki
-      POSTGRES_PASSWORD: 4ZJ2ML*xzbCSXgxhn9Bcb5@x
+      POSTGRES_PASSWORD: ${KBDB_PASSWORD}
       POSTGRES_USER: wikijs
     logging:
       driver: none
