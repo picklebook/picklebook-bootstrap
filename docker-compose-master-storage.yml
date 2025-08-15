@@ -18,6 +18,12 @@ volumes:
   picklebook-redis-data:
     external: true
     name: picklebook-redis-data
+  kb-data:
+    external: true
+    name: kb-data
+
+
+    
 
 services:
   picklebook-rabbitmq-proxy:

@@ -13,6 +13,9 @@ volumes:
   picklebook-user-guides:
     external: true
     name: picklebook-user-guides
+  kbfiles-data:
+    external: true
+    name: kbfiles-data
 
 services:
   picklebook-web:
