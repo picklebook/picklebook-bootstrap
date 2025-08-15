@@ -97,3 +97,19 @@ services:
       MYSQL_ROOT_PASSWORD: root
     networks:
       - picklebook-network
+
+
+  kbdb:
+    image: postgres:15-alpine
+    container_name: kbdb
+    environment:
+      POSTGRES_DB: wiki
+      POSTGRES_PASSWORD: 4ZJ2ML*xzbCSXgxhn9Bcb5@x
+      POSTGRES_USER: wikijs
+    logging:
+      driver: none
+    restart: unless-stopped
+    volumes:
+      - kb-data:/var/lib/postgresql/data
+    networks:
+      - picklebook-network

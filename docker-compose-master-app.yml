@@ -51,3 +51,23 @@ services:
       - POSTGRES_USER=postcodesio
     networks:
       - picklebook-network
+
+
+
+  kb:
+    image: ghcr.io/requarks/wiki:2
+    depends_on:
+      - kbdb
+    container_name: kb
+    environment:
+      DB_TYPE: postgres
+      DB_HOST: kbdb
+      DB_PORT: 5432
+      DB_USER: wikijs
+      DB_PASS: 4ZJ2ML*xzbCSXgxhn9Bcb5@x
+      DB_NAME: wiki
+    restart: unless-stopped
+    networks:
+      - picklebook-network
+    volumes:
+      - kbfiles-data:/wiki/data/uploads
