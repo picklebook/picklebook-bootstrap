@@ -15,6 +15,9 @@ docker volume create picklebook-rabbitmq-data
 docker volume create picklebook-rabbitmq-logs
 docker volume create picklebook-mysql-data
 docker volume create picklebook-redis-data
+docker volume create kbfiles-data
+docker volume create kb-data
+
 
 
 rm -rf picklebook-bootstrap
