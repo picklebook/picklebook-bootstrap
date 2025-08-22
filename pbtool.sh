@@ -203,9 +203,9 @@ if [ $operation = "UPGRADE" ]; then
     $(docker compose -f docker-compose-master-mailpit.yml pull)
 
     $(docker compose -f docker-compose-master-storage.yml up -d --remove-orphans)
-    $(docker compose -f docker-compose-master-workers.yml up -d --remove-orphans--force-recreate)
-    $(docker compose -f docker-compose-master-app.yml up -d --remove-orphans--force-recreate)
-    $(docker compose -f docker-compose-master-dmz.yml up -d --remove-orphans--force-recreate)
+    $(docker compose -f docker-compose-master-workers.yml up -d --remove-orphans --force-recreate)
+    $(docker compose -f docker-compose-master-app.yml up -d --remove-orphans --force-recreate)
+    $(docker compose -f docker-compose-master-dmz.yml up -d --remove-orphans --force-recreate)
     $(docker compose -f docker-compose-master-metrics.yml up -d --remove-orphans)
     $(docker compose -f docker-compose-master-mailpit.yml up -d --remove-orphans)
 
