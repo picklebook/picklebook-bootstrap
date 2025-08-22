@@ -184,6 +184,17 @@ if [ $operation = "UPGRADE" ]; then
         exit
     fi
 
+
+    read -p "Enter the version you want to deploy: " IMAGE_TAG
+    echo "Testing if version $IMAGE_TAG exists...."
+    if docker manifest inspect "docker.picklebook.org/bzwahlen/picklebook-web:$IMAGE_TAG" > /dev/null 2>&1; then
+        sed -i "s/^PB_IMAGE_TAG=.*/PB_IMAGE_TAG=$IMAGE_TAG/" .env
+    else
+        echo "The version $IMAGE_TAG does not exist."
+        exit 1
+    fi
+
+
     $(docker compose -f docker-compose-master-storage.yml pull)
     $(docker compose -f docker-compose-master-workers.yml pull)
     $(docker compose -f docker-compose-master-app.yml pull)

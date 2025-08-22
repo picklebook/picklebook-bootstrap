@@ -20,7 +20,7 @@ volumes:
 services:
   picklebook-web:
     container_name: picklebook-web
-    image: docker.picklebook.org/bzwahlen/picklebook-web:latest
+    image: docker.picklebook.org/bzwahlen/picklebook-web:${PB_IMAGE_TAG}
     restart: unless-stopped
     volumes:
       - ./.env:/var/www/.env:ro

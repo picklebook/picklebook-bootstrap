@@ -16,7 +16,7 @@ volumes:
 services:
   picklebook-nginx:
     container_name: picklebook-nginx
-    image: docker.picklebook.org/bzwahlen/picklebook-nginx:latest
+    image: docker.picklebook.org/bzwahlen/picklebook-nginx:${PB_IMAGE_TAG}
     ports:
       - 443:443
     restart: unless-stopped
