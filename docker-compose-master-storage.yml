@@ -55,6 +55,9 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+    command: >
+      bash -c "rabbitmq-plugins enable --offline rabbitmq_prometheus &&
+               rabbitmq-server"
 
   picklebook-database:
     image: mariadb:11.8
