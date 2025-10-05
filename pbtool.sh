@@ -180,7 +180,6 @@ if [ $operation = "UPGRADE" ]; then
         cp picklebook-bootstrap/*.yaml .
         cp picklebook-bootstrap/*.sh .
         cp picklebook-bootstrap/Caddyfile .
-        cp -R picklebook-bootstrap/certs .
         chmod +x *.sh
         echo "PBTools has been updated, please run again."
         exit
@@ -209,7 +208,6 @@ if [ $operation = "UPGRADE" ]; then
 
     $(docker compose -f docker-compose-master-dmz.yml up -d --remove-orphans --force-recreate picklebook-nginx1)
     $(docker compose -f docker-compose-master-dmz.yml up -d --remove-orphans --force-recreate picklebook-nginx2)
-
     
     $(docker compose -f docker-compose-master-app.yml up -d --remove-orphans --force-recreate picklebook-web1)
     $(docker compose -f docker-compose-master-app.yml up -d --remove-orphans --force-recreate picklebook-web2)
