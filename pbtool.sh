@@ -172,14 +172,16 @@ if [ $operation = "UPGRADE" ]; then
     hash1=`md5sum picklebook-bootstrap/pbtool.sh | cut -d" " -f1`
     hash2=`md5sum pbtool.sh | cut -d" " -f1`
     
-    cp picklebook-bootstrap/docker-compose-master-* .
-    cp picklebook-bootstrap/*.yaml .
-    cp picklebook-bootstrap/*.sh .
-    chmod +x *.sh
-    
 
     if [ $hash1 != $hash2 ]; then
         cp picklebook-bootstrap/pbtool.sh .
+
+        cp picklebook-bootstrap/docker-compose-master-* .
+        cp picklebook-bootstrap/*.yaml .
+        cp picklebook-bootstrap/*.sh .
+        cp picklebook-bootstrap/Caddyfile .
+        cp -R picklebook-bootstrap/certs .
+        chmod +x *.sh
         echo "PBTools has been updated, please run again."
         exit
     fi
@@ -195,20 +197,25 @@ if [ $operation = "UPGRADE" ]; then
     fi
 
 
-    $(docker compose -f docker-compose-master-storage.yml pull)
+    
     $(docker compose -f docker-compose-master-workers.yml pull)
+    
     $(docker compose -f docker-compose-master-app.yml pull)
     $(docker compose -f docker-compose-master-dmz.yml pull)
-    $(docker compose -f docker-compose-master-metrics.yml pull)
-    $(docker compose -f docker-compose-master-mailpit.yml pull)
+    
+    
 
-    $(docker compose -f docker-compose-master-storage.yml up -d --remove-orphans)
     $(docker compose -f docker-compose-master-workers.yml up -d --remove-orphans --force-recreate)
-    $(docker compose -f docker-compose-master-app.yml up -d --remove-orphans --force-recreate)
-    $(docker compose -f docker-compose-master-dmz.yml up -d --remove-orphans --force-recreate)
-    $(docker compose -f docker-compose-master-metrics.yml up -d --remove-orphans)
-    $(docker compose -f docker-compose-master-mailpit.yml up -d --remove-orphans)
 
+    $(docker compose -f docker-compose-master-dmz.yml up -d --remove-orphans --force-recreate picklebook-nginx1)
+    $(docker compose -f docker-compose-master-dmz.yml up -d --remove-orphans --force-recreate picklebook-nginx2)
+
+    
+    $(docker compose -f docker-compose-master-app.yml up -d --remove-orphans --force-recreate picklebook-web1)
+    $(docker compose -f docker-compose-master-app.yml up -d --remove-orphans --force-recreate picklebook-web2)
+
+    
+    
     echo "Purging cache..."
     docker exec -it picklebook-worker-cycles bash -c "cd jobs; php purge-cache.php"
     echo "Complete."

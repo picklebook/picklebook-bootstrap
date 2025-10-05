@@ -18,8 +18,21 @@ volumes:
     name: kbfiles-data
 
 services:
-  picklebook-web:
-    container_name: picklebook-web
+  picklebook-web1:
+    container_name: picklebook-web1
+    image: docker.picklebook.org/bzwahlen/picklebook-web:${PB_IMAGE_TAG}
+    restart: unless-stopped
+    volumes:
+      - ./.env:/var/www/.env:ro
+      - picklebook-user-uploads:/var/www/public/user_uploads
+      - picklebook-user-guides:/var/www/public/pb_docs
+    environment:
+      upload_max_filesize: 30M
+    networks:
+      - picklebook-network
+
+  picklebook-web2:
+    container_name: picklebook-web2
     image: docker.picklebook.org/bzwahlen/picklebook-web:${PB_IMAGE_TAG}
     restart: unless-stopped
     volumes:

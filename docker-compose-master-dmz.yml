@@ -12,13 +12,17 @@ volumes:
   picklebook-user-guides:
     external: true
     name: picklebook-user-guides
+  caddy-data:
+    external: true
+    name: caddy-data
+  caddy-config:
+    external: true
+    name: caddy-config
 
 services:
-  picklebook-nginx:
-    container_name: picklebook-nginx
+  picklebook-nginx1:
+    container_name: picklebook-nginx1
     image: docker.picklebook.org/bzwahlen/picklebook-nginx:${PB_IMAGE_TAG}
-    ports:
-      - 443:443
     restart: unless-stopped
     labels:
       - logger=promtail
@@ -27,3 +31,34 @@ services:
       - picklebook-user-guides:/var/www/public/pb_docs
     networks:
       - picklebook-network
+
+  picklebook-nginx2:
+    container_name: picklebook-nginx2
+    image: docker.picklebook.org/bzwahlen/picklebook-nginx:${PB_IMAGE_TAG}
+    restart: unless-stopped
+    labels:
+      - logger=promtail
+    volumes:
+      - picklebook-user-uploads:/var/www/public/user_uploads
+      - picklebook-user-guides:/var/www/public/pb_docs
+    networks:
+      - picklebook-network
+
+  picklebook-caddy:
+    image: caddy:2.10.2
+    container_name: picklebook-caddy
+    ports:
+      - "443:443"
+    labels:
+      - logger=promtail
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - ./certs:/etc/caddy/certs:ro
+      - caddy-data:/data
+      - caddy-config:/config
+    depends_on:
+      - picklebook-nginx1
+      - picklebook-nginx2
+    networks:
+      - picklebook-network
+    restart: unless-stopped
