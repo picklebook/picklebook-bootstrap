@@ -207,9 +207,14 @@ if [ $operation = "UPGRADE" ]; then
     $(docker compose -f docker-compose-master-workers.yml up -d --remove-orphans --force-recreate)
 
     $(docker compose -f docker-compose-master-dmz.yml up -d --remove-orphans --force-recreate picklebook-nginx1)
+    sleep 1
+
     $(docker compose -f docker-compose-master-dmz.yml up -d --remove-orphans --force-recreate picklebook-nginx2)
+    sleep 1
     
     $(docker compose -f docker-compose-master-app.yml up -d --remove-orphans --force-recreate picklebook-web1)
+    sleep 1
+
     $(docker compose -f docker-compose-master-app.yml up -d --remove-orphans --force-recreate picklebook-web2)
 
     
