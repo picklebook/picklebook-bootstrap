@@ -29,3 +29,7 @@ scrape_configs:
     scrape_timeout: 1s
     static_configs:
       - targets: ['phpfpm-exporter:9253']
+
+  - job_name: "rabbitmq"
+    static_configs:
+      - targets: ["picklebook-rabbitmq:15692"]
