@@ -21,6 +21,8 @@ services:
       - picklebook-user-uploads:/var/www/public/user_uploads
     networks:
       - picklebook-network
+    profiles: ["prod", "nonprod"]
+
   picklebook-worker-cycles:
     image: docker.picklebook.org/bzwahlen/picklebook-worker-cycles:${PB_IMAGE_TAG}
     container_name: picklebook-worker-cycles
@@ -29,6 +31,8 @@ services:
       - ./.env:/var/www/.env:ro
     networks:
       - picklebook-network
+    profiles: ["prod", "nonprod"]
+
   picklebook-worker-actions:
     image: docker.picklebook.org/bzwahlen/picklebook-worker-actions:${PB_IMAGE_TAG}
     container_name: picklebook-worker-actions
@@ -38,6 +42,8 @@ services:
       - picklebook-user-uploads:/var/www/public/user_uploads
     networks:
       - picklebook-network
+    profiles: ["prod", "nonprod"]
+
   picklebook-worker-audit:
     image: docker.picklebook.org/bzwahlen/picklebook-worker-audit:${PB_IMAGE_TAG}
     container_name: picklebook-worker-audit
@@ -46,3 +52,4 @@ services:
       - ./.env:/var/www/.env:ro
     networks:
       - picklebook-network
+    profiles: ["prod", "nonprod"]

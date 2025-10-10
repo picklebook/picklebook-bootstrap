@@ -179,7 +179,7 @@ if [ $operation = "UPGRADE" ]; then
         cp picklebook-bootstrap/docker-compose-master-* .
         cp picklebook-bootstrap/*.yaml .
         cp picklebook-bootstrap/*.sh .
-        cp picklebook-bootstrap/Caddyfile .
+        cp picklebook-bootstrap/Caddyfile.* .
         chmod +x *.sh
         echo "PBTools has been updated, please run again."
         exit

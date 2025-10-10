@@ -31,6 +31,7 @@ services:
       - picklebook-user-guides:/var/www/public/pb_docs
     networks:
       - picklebook-network
+    profiles: ["prod", "nonprod"]
 
   picklebook-nginx2:
     container_name: picklebook-nginx2
@@ -43,6 +44,7 @@ services:
       - picklebook-user-guides:/var/www/public/pb_docs
     networks:
       - picklebook-network
+    profiles: ["prod", "nonprod"]
 
   picklebook-caddy:
     image: caddy:2.10.2
@@ -62,3 +64,4 @@ services:
     networks:
       - picklebook-network
     restart: unless-stopped
+    profiles: ["prod", "nonprod"]

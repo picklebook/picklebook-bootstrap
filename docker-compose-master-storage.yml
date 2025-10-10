@@ -36,6 +36,7 @@ services:
         condition: service_healthy
     networks:
       - picklebook-network
+    profiles: ["prod", "nonprod"]
 
   picklebook-rabbitmq:
     image: rabbitmq:4.1-alpine
@@ -58,6 +59,7 @@ services:
     command: >
       bash -c "rabbitmq-plugins enable --offline rabbitmq_prometheus &&
                rabbitmq-server"
+    profiles: ["prod", "nonprod"]
 
   picklebook-database:
     image: mariadb:11.8
@@ -79,6 +81,7 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+    profiles: ["prod", "nonprod"]
 
   picklebook-redis:
     image: redis:8.2
@@ -95,6 +98,7 @@ services:
       interval: 10s
       timeout: 5s
       retries: 3
+    profiles: ["prod", "nonprod"]
 
 
   phpmyadmin:
@@ -106,6 +110,7 @@ services:
       MYSQL_ROOT_PASSWORD: root
     networks:
       - picklebook-network
+    profiles: ["nonprod"]
 
 
   kbdb:
@@ -122,3 +127,4 @@ services:
       - kb-data:/var/lib/postgresql/data
     networks:
       - picklebook-network
+    profiles: ["prod", "nonprod"]

@@ -30,6 +30,7 @@ services:
       upload_max_filesize: 30M
     networks:
       - picklebook-network
+    profiles: ["prod", "nonprod"]
 
   picklebook-web2:
     container_name: picklebook-web2
@@ -43,6 +44,7 @@ services:
       upload_max_filesize: 30M
     networks:
       - picklebook-network
+    profiles: ["prod", "nonprod"]
 
   postcode-api:
     container_name: postcode-api
@@ -57,6 +59,7 @@ services:
       - POSTGRES_HOST=postcode-db
     networks:
       - picklebook-network
+    profiles: ["prod", "nonprod"]
   postcode-db:
     container_name: postcode-db
     image: idealpostcodes/postcodes.io.db:latest
@@ -67,7 +70,7 @@ services:
       - POSTGRES_USER=postcodesio
     networks:
       - picklebook-network
-
+    profiles: ["prod", "nonprod"]
 
 
   kb:
@@ -85,3 +88,4 @@ services:
       - picklebook-network
     volumes:
       - kbfiles-data:/wiki/data/uploads
+    profiles: ["prod", "nonprod"]

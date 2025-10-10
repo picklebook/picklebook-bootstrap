@@ -1,0 +1,69 @@
+(common_settings) {
+    tls /etc/caddy/certs/mycert.crt /etc/caddy/certs/mykey.key
+
+    header {
+        Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+        X-Frame-Options "DENY"
+        X-Content-Type-Options "nosniff"
+        Referrer-Policy "no-referrer-when-downgrade"
+        Permissions-Policy "geolocation=(), microphone=(), camera=()"
+        Cache-Control "public, max-age=3600"
+    }
+
+    encode zstd gzip
+}
+
+devemail.picklebook.org:443 {
+    import common_settings
+
+    reverse_proxy http://mailpit:8025 {
+        transport http {
+            keepalive 32s
+            keepalive_idle_conns 64
+        }
+    }
+}
+
+devbdi.picklebook.org:443 {
+    import common_settings
+
+    reverse_proxy http://grafana:3000 {
+        transport http {
+            keepalive 32s
+            keepalive_idle_conns 64
+        }
+    }
+}
+
+devdb.picklebook.org:443 {
+    import common_settings
+
+    reverse_proxy http://phpmyadmin:80 {
+        transport http {
+            keepalive 32s
+            keepalive_idle_conns 64
+        }
+    }
+}
+
+
+:443 {
+    import common_settings
+
+    reverse_proxy {
+        to http://picklebook-nginx:80
+        
+		lb_policy least_conn
+
+        health_uri /health
+        health_interval 5s
+        health_timeout 2s
+		health_status 200
+
+		# Connection settings
+        transport http {
+            keepalive 32s
+            keepalive_idle_conns 64
+        }
+    }
+}
