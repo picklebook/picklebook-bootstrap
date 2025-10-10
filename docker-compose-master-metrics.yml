@@ -15,7 +15,6 @@ volumes:
   picklebook-loki-data:
     external: true
     name: picklebook-loki-data
-  profiles: ["prod", "nonprod"]
 
 services:
   grafana:
