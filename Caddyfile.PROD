@@ -29,7 +29,8 @@ bdi.picklebook.org:443 {
     import common_settings
 
     reverse_proxy {
-        to http://picklebook-nginx:80
+        to http://picklebook-nginx1:80
+        to http://picklebook-nginx2:80
         
 		lb_policy least_conn
 

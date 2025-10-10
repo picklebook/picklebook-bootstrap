@@ -54,7 +54,7 @@ services:
     labels:
       - logger=promtail
     volumes:
-      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - ./Caddyfile.${SITE_ENV}:/etc/caddy/Caddyfile:ro
       - ./certs:/etc/caddy/certs:ro
       - caddy-data:/data
       - caddy-config:/config
