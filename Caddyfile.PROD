@@ -3,7 +3,7 @@
 
     header {
         Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
-        Content-Security-Policy: script-src 'self' 'unsafe-inline' analytics.picklebook.org code.jquery.com cdn.jsdelivr.net cdnjs.cloudflare.com cdn.datatables.net; style-src 'self' cdnjs.cloudflare.com cdn.datatables.net cdn.jsdelivr.net; img-src 'self' data:; manifest-src 'self'
+        Content-Security-Policy: "script-src 'self' 'unsafe-inline' analytics.picklebook.org code.jquery.com cdn.jsdelivr.net cdnjs.cloudflare.com cdn.datatables.net; style-src 'self' 'unsafe-inline' cdnjs.cloudflare.com cdn.datatables.net cdn.jsdelivr.net; img-src 'self' data:; manifest-src 'self'"
         X-Frame-Options "DENY"
         X-Content-Type-Options "nosniff"
         Referrer-Policy "strict-origin-when-cross-origin"
@@ -14,8 +14,10 @@
         Cache-Control "public, max-age=3600"
     }
 
-    # Optional: remove the Via header
-    header -delete Via
+    header -Via
+    header -Via
+    header -X-Powered-By
+    header -Server
 
     encode zstd gzip
 }
