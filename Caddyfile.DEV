@@ -3,14 +3,12 @@
 
     header {
         Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
-        Content-Security-Policy: "script-src 'self' 'unsafe-inline' analytics.picklebook.org code.jquery.com cdn.jsdelivr.net cdnjs.cloudflare.com cdn.datatables.net; style-src 'self' 'unsafe-inline' cdnjs.cloudflare.com cdn.datatables.net cdn.jsdelivr.net; img-src 'self' data:; manifest-src 'self'"
+        Content-Security-Policy: "script-src 'self' 'unsafe-inline' 'unsafe-eval' maps.googleapis.com challenges.cloudflare.com analytics.picklebook.org code.jquery.com cdn.jsdelivr.net cdnjs.cloudflare.com cdn.datatables.net; style-src 'self' 'unsafe-inline' fonts.googleapis.com maps.googleapis.com cdnjs.cloudflare.com cdn.datatables.net cdn.jsdelivr.net; manifest-src 'self'"
         X-Frame-Options "DENY"
         X-Content-Type-Options "nosniff"
         Referrer-Policy "strict-origin-when-cross-origin"
         Permissions-Policy "geolocation=(), microphone=(), camera=()"
         Cross-Origin-Opener-Policy "same-origin"
-        Cross-Origin-Resource-Policy "same-origin"
-        Cross-Origin-Embedder-Policy "require-corp"
         Cache-Control "public, max-age=3600"
     }
 
@@ -21,6 +19,7 @@
 
     encode zstd gzip
 }
+
 
 devemail.picklebook.org:443 {
     import common_settings
