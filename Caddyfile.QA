@@ -3,13 +3,13 @@
 
     header {
         Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
-        Content-Security-Policy: "script-src 'self' 'unsafe-inline' 'unsafe-eval' maps.googleapis.com challenges.cloudflare.com analytics.picklebook.org code.jquery.com cdn.jsdelivr.net cdnjs.cloudflare.com cdn.datatables.net; style-src 'self' 'unsafe-inline' fonts.googleapis.com maps.googleapis.com cdnjs.cloudflare.com cdn.datatables.net cdn.jsdelivr.net; manifest-src 'self'"
+        Content-Security-Policy: "script-src 'self' 'unsafe-inline' 'unsafe-eval' maps.googleapis.com challenges.cloudflare.com www.picklebook.org; style-src 'self' 'unsafe-inline' maps.googleapis.com fonts.googleapis.com; manifest-src 'self'"
         X-Frame-Options "DENY"
         X-Content-Type-Options "nosniff"
         Referrer-Policy "strict-origin-when-cross-origin"
         Permissions-Policy "geolocation=(), microphone=(), camera=()"
         Cross-Origin-Opener-Policy "same-origin"
-        Cache-Control "public, max-age=3600"
+        Cache-Control "no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0"
     }
 
     header -Via
@@ -58,21 +58,33 @@ qadb.picklebook.org:443 {
 :443 {
     import common_settings
 
-    reverse_proxy {
-        to http://picklebook-nginx1:80
-        to http://picklebook-nginx2:80
-        
-		lb_policy least_conn
+    @assets {
+        path /assets/*
+    }
+    header @assets {
+        # Long-lived cache for static versioned assets
+        Cache-Control "public, max-age=31536000, immutable"
+    }
 
-        health_uri /health
-        health_interval 5s
-        health_timeout 2s
-		health_status 200
+    handle {
+        reverse_proxy {
+            to http://picklebook-nginx1:80
+            to http://picklebook-nginx2:80
 
-		# Connection settings
-        transport http {
-            keepalive 32s
-            keepalive_idle_conns 64
+            header_down -Cache-Control
+            
+            lb_policy least_conn
+
+            health_uri /health
+            health_interval 5s
+            health_timeout 2s
+            health_status 200
+
+            # Connection settings
+            transport http {
+                keepalive 32s
+                keepalive_idle_conns 64
+            }
         }
     }
 }
