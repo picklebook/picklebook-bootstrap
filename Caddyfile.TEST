@@ -21,7 +21,7 @@
 }
 
 
-qaemail.picklebook.org:443 {
+testemail.picklebook.org:443 {
     import common_settings
 
     basicauth {
@@ -36,7 +36,7 @@ qaemail.picklebook.org:443 {
     }
 }
 
-qabdi.picklebook.org:443 {
+testbdi.picklebook.org:443 {
     import common_settings
 
     reverse_proxy http://grafana:3000 {
@@ -47,7 +47,7 @@ qabdi.picklebook.org:443 {
     }
 }
 
-qadb.picklebook.org:443 {
+testdb.picklebook.org:443 {
     import common_settings
 
     reverse_proxy http://phpmyadmin:80 {

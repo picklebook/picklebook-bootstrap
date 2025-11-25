@@ -23,6 +23,10 @@
 devemail.picklebook.org:443 {
     import common_settings
 
+    basicauth {
+        mail $2a$14$/flKF3.1jC/sUB8dFPY5seC0LNsMckPO3uZtK6cl.8quvBNPnwkES   # Pitofmails99
+    }
+
     reverse_proxy http://mailpit:8025 {
         transport http {
             keepalive 32s
