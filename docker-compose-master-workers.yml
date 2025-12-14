@@ -44,6 +44,17 @@ services:
       - picklebook-network
     profiles: ["prod", "nonprod"]
 
+  picklebook-worker-reports:
+    image: docker.picklebook.org/bzwahlen/picklebook-worker-reports:${PB_IMAGE_TAG}
+    container_name: picklebook-worker-reports
+    restart: unless-stopped
+    volumes:
+      - ./.env:/var/www/.env:ro
+      - picklebook-user-uploads:/var/www/public/user_uploads
+    networks:
+      - picklebook-network
+    profiles: ["prod", "nonprod"]
+
   picklebook-worker-audit:
     image: docker.picklebook.org/bzwahlen/picklebook-worker-audit:${PB_IMAGE_TAG}
     container_name: picklebook-worker-audit
