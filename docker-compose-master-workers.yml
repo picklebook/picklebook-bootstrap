@@ -13,9 +13,10 @@ networks:
 
 services:
   picklebook-worker-email:
-    image: docker.picklebook.org/bzwahlen/picklebook-worker-email:${PB_IMAGE_TAG}
+    image: docker.picklebook.org/bzwahlen/picklebook-worker-jobs:${PB_IMAGE_TAG}
     container_name: picklebook-worker-email
     restart: unless-stopped
+    command: [ "php", "emails.php" ]
     volumes:
       - ./.env:/var/www/.env:ro
       - picklebook-user-uploads:/var/www/public/user_uploads
@@ -34,9 +35,10 @@ services:
     profiles: ["prod", "nonprod"]
 
   picklebook-worker-actions:
-    image: docker.picklebook.org/bzwahlen/picklebook-worker-actions:${PB_IMAGE_TAG}
+    image: docker.picklebook.org/bzwahlen/picklebook-worker-jobs:${PB_IMAGE_TAG}
     container_name: picklebook-worker-actions
     restart: unless-stopped
+    command: [ "php", "actions.php" ]
     volumes:
       - ./.env:/var/www/.env:ro
       - picklebook-user-uploads:/var/www/public/user_uploads
@@ -45,9 +47,10 @@ services:
     profiles: ["prod", "nonprod"]
 
   picklebook-worker-reports:
-    image: docker.picklebook.org/bzwahlen/picklebook-worker-reports:${PB_IMAGE_TAG}
+    image: docker.picklebook.org/bzwahlen/picklebook-worker-jobs:${PB_IMAGE_TAG}
     container_name: picklebook-worker-reports
     restart: unless-stopped
+    command: [ "php", "reports.php" ]
     volumes:
       - ./.env:/var/www/.env:ro
       - picklebook-user-uploads:/var/www/public/user_uploads
@@ -56,9 +59,10 @@ services:
     profiles: ["prod", "nonprod"]
 
   picklebook-worker-audit:
-    image: docker.picklebook.org/bzwahlen/picklebook-worker-audit:${PB_IMAGE_TAG}
+    image: docker.picklebook.org/bzwahlen/picklebook-worker-jobs:${PB_IMAGE_TAG}
     container_name: picklebook-worker-audit
     restart: unless-stopped
+    command: [ "php", "audit.php" ]
     volumes:
       - ./.env:/var/www/.env:ro
     networks:
