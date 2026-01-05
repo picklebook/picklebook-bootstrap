@@ -24,6 +24,18 @@ services:
       - picklebook-network
     profiles: ["prod", "nonprod"]
 
+  picklebook-worker-batchemail:
+    image: docker.picklebook.org/bzwahlen/picklebook-worker-jobs:${PB_IMAGE_TAG}
+    container_name: picklebook-worker-batchemail
+    restart: unless-stopped
+    command: [ "php", "batchemail.php" ]
+    volumes:
+      - ./.env:/var/www/.env:ro
+      - picklebook-user-uploads:/var/www/public/user_uploads
+    networks:
+      - picklebook-network
+    profiles: ["prod", "nonprod"]
+
   picklebook-worker-cycles:
     image: docker.picklebook.org/bzwahlen/picklebook-worker-cycles:${PB_IMAGE_TAG}
     container_name: picklebook-worker-cycles
