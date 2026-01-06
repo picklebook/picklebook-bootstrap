@@ -28,7 +28,7 @@ services:
     image: docker.picklebook.org/bzwahlen/picklebook-worker-jobs:${PB_IMAGE_TAG}
     container_name: picklebook-worker-batchemail
     restart: unless-stopped
-    command: [ "php", "batchemail.php" ]
+    command: [ "php", "batchemails.php" ]
     volumes:
       - ./.env:/var/www/.env:ro
       - picklebook-user-uploads:/var/www/public/user_uploads
