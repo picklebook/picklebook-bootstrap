@@ -18,6 +18,9 @@ volumes:
   picklebook-redis-data:
     external: true
     name: picklebook-redis-data
+  picklebook-redis-stock-data:
+    external: true
+    name: picklebook-redis-stock-data
   kb-data:
     external: true
     name: kb-data
@@ -100,6 +103,22 @@ services:
       retries: 3
     profiles: ["prod", "nonprod"]
 
+  picklebook-redis-stock:
+    image: redis:8.2
+    container_name: picklebook-redis-stock
+    restart: always
+    command: redis-server --save 60 1 --loglevel warning --requirepass ${STOCK_REDISPASSWORD}
+    volumes:
+      - picklebook-redis-stock-data:/data
+    networks:
+      - picklebook-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      start_period: 10s
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    profiles: ["prod", "nonprod"]
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin:latest

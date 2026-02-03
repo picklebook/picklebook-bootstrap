@@ -13,7 +13,7 @@ mkdir -p backup_$SITE_ENV"_"$DATE/db/
 
 
 
-if docker exec -t picklebook-db mariadb-dump -uroot -p${DB_ROOTPASSWORD} picklebook > backup_$SITE_ENV"_"$DATE/db/picklebook.sql ; then
+if docker exec -t picklebook-db mariadb-dump --single-transaction --quick --skip-lock-tables -uroot -p${DB_ROOTPASSWORD} picklebook > backup_$SITE_ENV"_"$DATE/db/picklebook.sql ; then
     echo "✅ Backup successful"
 else
     echo "❌ Backup failed!"
@@ -23,7 +23,6 @@ fi
 
 cp .env backup_$SITE_ENV"_"$DATE/env
 cp -R /var/lib/docker/volumes/picklebook-user-uploads/_data/* backup_$SITE_ENV"_"$DATE/user-uploads/
-cp -R /var/lib/docker/volumes/picklebook-user-guides/_data/* backup_$SITE_ENV"_"$DATE/user-guides/
 
 rm -rf backup_$SITE_ENV"_"$DATE/user-uploads/profilepic/orig/*
 
