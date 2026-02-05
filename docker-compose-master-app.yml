@@ -48,7 +48,7 @@ services:
 
   postcode-api:
     container_name: postcode-api
-    image: idealpostcodes/postcodes.io:latest
+    image: idealpostcodes/postcodes.io:release-18.0.0
     restart: unless-stopped
     depends_on:
       - postcode-db
@@ -62,7 +62,7 @@ services:
     profiles: ["prod", "nonprod"]
   postcode-db:
     container_name: postcode-db
-    image: idealpostcodes/postcodes.io.db:latest
+    image: idealpostcodes/postcodes.io.db:18.0.0
     restart: unless-stopped
     environment:
       - POSTGRES_DB=postcodesiodb
